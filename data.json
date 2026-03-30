@@ -8,7 +8,7 @@
     },
     {
       "id": "p2",
-      "name": "Importación K-Beauty",
+      "name": "ImportaciÃ³n K-Beauty",
       "color": "#8c6a5a",
       "tasks": []
     },
@@ -20,7 +20,7 @@
     },
     {
       "id": "p4",
-      "name": "Marca Capilar Ayurvédica",
+      "name": "Marca Capilar AyurvÃ©dica",
       "color": "#6a5a8c",
       "tasks": []
     },
@@ -28,7 +28,160 @@
       "id": "p5",
       "name": "Sabor Selecto",
       "color": "#5a8c6a",
-      "tasks": []
+      "tasks": [
+        {
+          "id": "1774853892630_0",
+          "text": "Comprar dominio saborselecto.es en Namecheap (~10€)",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_1",
+          "text": "Contratar hosting en Hostinger (plan Business, ~3€/mes)",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_2",
+          "text": "Subir saborselecto.html y admin.html al hosting",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_3",
+          "text": "Verificar que la web se ve bien en Chrome y en móvil",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_4",
+          "text": "Crear perfil Instagram @saborselecto con el logo",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_5",
+          "text": "Crear página de Facebook \"Sabor Selecto\"",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_6",
+          "text": "Bio Instagram: Packs gourmet españoles · Edición limitada · Cada mes uno diferente · Acceso anticipado pronto",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_7",
+          "text": "Post 1 — Presentación de la marca: quién es Sabor Selecto, qué hace, por qué solo 40 unidades",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_8",
+          "text": "Post 2 — El concepto: por qué cada mes un pack diferente y qué significa seleccionar con criterio",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_9",
+          "text": "Post 3 — Teaser: \"Junio. 40 unidades. Lista de espera abierta pronto\" con fondo oscuro y tipografía elegante, sin producto",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_10",
+          "text": "Crear cuenta Stripe con el CIF de la junior empresa",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_11",
+          "text": "Crear el producto \"Pack Gourmet del Mes\" a 110€ y guardar el enlace de pago",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_12",
+          "text": "Crear cuenta en Meta Business Manager (business.facebook.com)",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_13",
+          "text": "Conectar Instagram y Facebook al Business Manager",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_14",
+          "text": "En Ads Manager crear campaña con objetivo Generación de leads",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_15",
+          "text": "Crear formulario nativo con dos campos: Nombre y Email",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_16",
+          "text": "Título: \"Acceso anticipado — Pack Gourmet Junio\"",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_17",
+          "text": "Descripción: \"40 unidades. Solo para quien esté en la lista. Te avisamos 24h antes del lanzamiento.\"",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        },
+        {
+          "id": "1774853892630_18",
+          "text": "Guardar sin activar todavía",
+          "done": false,
+          "prio": "low",
+          "day": "all",
+          "week": "2026-03-29"
+        }
+      ]
     },
     {
       "id": "p6",
