@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyectos Semanales</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f7f6f3; --card:#fff; --card2:#f2f0ec; --border:#e4e0d8; --border2:#ccc8bf;
+  --text:#1c1a16; --muted:#7a766e; --faint:#b8b4ab;
+  --high:#c0522a; --high-bg:#fdf0eb; --high-bd:#f0c8b4;
+  --med:#a07818;  --med-bg:#fdf5e0;  --med-bd:#edd898;
+  --low:#3a7ea8;  --low-bg:#eaf4fb;  --low-bd:#b0d8f0;
+  --success:#3d8f5e; --success-bg:#e6f5ee;
+  --xp:#b06010; --xp-bg:#fef6e8; --xp-bd:#f0d898;
+  --r:10px; --rl:14px; --rxl:18px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+.shell{display:flex;min-height:100vh}
+/* Sidebar */
+.sidebar{width:236px;min-width:236px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-brand{display:flex;align-items:center;gap:9px;padding:20px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#b86e30,#8848a8);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sb-title{font-size:13px;font-weight:600;letter-spacing:-.01em}
+/* XP sidebar widget */
+.sb-xp{padding:10px 14px;background:var(--xp-bg);border-bottom:1px solid var(--xp-bd)}
+.sb-xp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.sb-xp-lvl{font-size:11px;font-weight:600;color:var(--xp);font-family:'JetBrains Mono',monospace}
+.sb-xp-pts{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.sb-xp-track{height:4px;background:var(--xp-bd);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.sb-xp-fill{height:100%;background:var(--xp);border-radius:2px;transition:width .5s ease}
+.sb-xp-streak{font-size:10.5px;color:var(--muted);display:flex;align-items:center;gap:4px}
+/* Nav */
+.sb-nav{padding:8px 10px;flex:1}
+.snl{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding:0 8px;margin:12px 0 4px}
+.sni{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:12.5px;transition:all .13s;border:1px solid transparent;margin-bottom:1px;user-select:none}
+.sni:hover{background:var(--card2);color:var(--text)}
+.sni.on{background:var(--card2);color:var(--text);border-color:var(--border);font-weight:500}
+.sni-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sni-cnt{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--card2);color:var(--muted);padding:1px 5px;border-radius:8px;border:1px solid var(--border)}
+.sni.on .sni-cnt{background:var(--text);color:var(--card);border-color:var(--text)}
+/* Topbar */
+.main{flex:1;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.tb-h{font-size:16px;font-weight:600;letter-spacing:-.02em}
+.tb-s{font-size:11px;color:var(--muted);margin-top:1px}
+.tb-btns{display:flex;gap:6px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r);border:1px solid var(--border2);background:var(--card);color:var(--text);font-family:'Sora',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .13s;white-space:nowrap}
+.btn:hover{background:var(--card2)}
+.btn-fill{background:var(--text);color:var(--card);border-color:var(--text)}
+.btn-fill:hover{background:#2c2a24;border-color:#2c2a24}
+.btn-sm{padding:5px 10px;font-size:11.5px}
+/* Pages */
+.page{padding:22px 26px;display:none}
+.page.on{display:block}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:22px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:13px 15px}
+.sc-v{font-size:22px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1}
+.sc-l{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+/* Project cards */
+.proj-list{display:flex;flex-direction:column;gap:11px}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--sh)}
+.pcard-head{padding:13px 16px 11px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--border)}
+.pcard-color{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0}
+.pcard-info{flex:1;min-width:0}
+.pcard-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px}
+.pcard-meta{font-size:11px;color:var(--muted);margin-top:1px}
+.prio-badge{font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace;padding:2px 8px;border-radius:20px;border:1px solid}
+.prio-badge.high{background:var(--high-bg);color:var(--high);border-color:var(--high-bd)}
+.prio-badge.med{background:var(--med-bg);color:var(--med);border-color:var(--med-bd)}
+.prio-badge.low{background:var(--low-bg);color:var(--low);border-color:var(--low-bd)}
+.pcard-bar{height:3px;background:var(--card2)}
+.pcard-bar-fill{height:100%;transition:width .5s ease}
+.pcard-tasks{padding:6px 10px}
+.pcard-empty{padding:14px;text-align:center;font-size:12px;color:var(--faint)}
+/* Task item */
+.ti{display:flex;align-items:flex-start;gap:9px;padding:8px 6px;border-radius:7px;transition:background .12s}
+.ti:hover{background:var(--card2)}
+.ti.is-done{opacity:.45}
+.ti-cb{width:16px;height:16px;min-width:16px;border-radius:5px;border:1.5px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .13s;flex-shrink:0}
+.ti-cb:hover{border-color:var(--text)}
+.ti-cb.done{background:var(--success);border-color:var(--success)}
+.ti-cb.done::after{content:'✓';color:#fff;font-size:9px;font-weight:700;line-height:1}
+.ti-txt{flex:1;font-size:12.5px;color:var(--text);line-height:1.45;word-break:break-word}
+.ti-txt.done{text-decoration:line-through;color:var(--faint)}
+.ti-del{background:none;border:none;color:var(--faint);cursor:pointer;font-size:14px;padding:0 2px;opacity:0;transition:opacity .12s;flex-shrink:0;line-height:1;margin-top:1px}
+.ti:hover .ti-del{opacity:1}
+.ti-del:hover{color:var(--high);opacity:1!important}
+.divider{height:1px;background:var(--border);margin:3px 0}
+/* Inline add */
+.pcard-addbtn{display:flex;align-items:center;gap:5px;width:100%;padding:6px 8px;background:none;border:none;cursor:pointer;font-family:'Sora',sans-serif;font-size:12px;color:var(--faint);transition:all .13s;border-radius:7px;margin:2px 4px 4px}
+.pcard-addbtn:hover{background:var(--card2);color:var(--muted)}
+.add-row{display:flex;gap:5px;padding:4px 8px 8px}
+.add-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-family:'Sora',sans-serif;font-size:12.5px;color:var(--text);outline:none;transition:border-color .13s}
+.add-input:focus{border-color:var(--border2)}
+/* Import */
+.import-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--rxl);padding:20px 22px;margin-bottom:14px;box-shadow:var(--sh)}
+.import-h{font-size:14px;font-weight:600;margin-bottom:3px}
+.import-s{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.step-row{display:flex;align-items:flex-start;gap:11px;margin-bottom:14px}
+.step-n{width:21px;height:21px;min-width:21px;border-radius:50%;background:var(--text);color:var(--card);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step-body{flex:1}
+.step-lbl{font-size:11.5px;font-weight:600;margin-bottom:6px}
+.textarea{width:100%;min-height:100px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;font-family:'Sora',sans-serif;font-size:12.5px;color:var(--text);resize:vertical;outline:none;transition:border-color .13s;line-height:1.6}
+.textarea:focus{border-color:var(--border2)}
+.sel{font-family:'Sora',sans-serif;font-size:12.5px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);outline:none;cursor:pointer}
+.proj-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.prio-pick{display:flex;gap:5px}
+.ppb{font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;padding:4px 11px;border-radius:20px;border:1px solid var(--border2);background:var(--card2);color:var(--muted);cursor:pointer;transition:all .13s}
+.ppb.sh{background:var(--high-bg);color:var(--high);border-color:var(--high-bd)}
+.ppb.sm{background:var(--med-bg);color:var(--med);border-color:var(--med-bd)}
+.ppb.sl{background:var(--low-bg);color:var(--low);border-color:var(--low-bd)}
+.ext-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:4px;font-size:12.5px}
+.ext-item input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--success);flex-shrink:0}
+.ext-item-t{flex:1;color:var(--text)}
+.mini-sel{font-family:'Sora',sans-serif;font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);outline:none}
+.import-actions{display:flex;gap:7px;justify-content:flex-end;margin-top:12px}
+/* Gamification */
+.xp-hero{background:var(--card);border:1px solid var(--xp-bd);border-radius:var(--rxl);padding:22px;margin-bottom:16px;box-shadow:var(--sh);background:linear-gradient(135deg,var(--xp-bg) 0%,#fff 60%)}
+.xp-hero-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.xp-lvl-big{font-size:28px;font-weight:600;color:var(--xp);font-family:'JetBrains Mono',monospace;line-height:1}
+.xp-lvl-name{font-size:13px;color:var(--muted);margin-top:3px}
+.xp-pts-big{text-align:right}
+.xp-pts-val{font-size:22px;font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--text)}
+.xp-pts-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.xp-bar-big{height:8px;background:var(--xp-bd);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.xp-bar-big-fill{height:100%;background:var(--xp);border-radius:4px;transition:width .6s ease}
+.xp-bar-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+/* Stats gamif */
+.gstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:20px}
+.gsc{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:13px 15px;text-align:center}
+.gsc-v{font-size:22px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1}
+.gsc-l{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+/* Achievements */
+.ach-h{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.ach{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:13px 10px;text-align:center;transition:all .15s}
+.ach.earned{background:var(--xp-bg);border-color:var(--xp-bd)}
+.ach.locked{opacity:.3;filter:grayscale(.8)}
+.ach-ico{font-size:22px;margin-bottom:5px}
+.ach-name{font-size:11px;font-weight:600;margin-bottom:2px}
+.ach-desc{font-size:10px;color:var(--muted);line-height:1.3}
+/* Activity */
+.act-h{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+.act-grid{display:flex;flex-wrap:wrap;gap:3px}
+/* Manage projects */
+.manage-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--rxl);padding:20px 22px;margin-bottom:12px;box-shadow:var(--sh)}
+.manage-h{font-size:14px;font-weight:600;margin-bottom:14px}
+.proj-edit-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.proj-edit-row:last-child{border-bottom:none}
+.color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;cursor:pointer;border:2px solid transparent;transition:all .13s}
+.color-dot:hover{transform:scale(1.2)}
+.color-dot.sel-c{border-color:var(--text);transform:scale(1.15)}
+.edit-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-family:'Sora',sans-serif;font-size:12.5px;color:var(--text);outline:none;transition:border-color .13s}
+.edit-input:focus{border-color:var(--border2)}
+.emoji-input{width:44px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-family:'Sora',sans-serif;font-size:14px;color:var(--text);outline:none;text-align:center}
+.del-proj-btn{background:none;border:none;color:var(--faint);cursor:pointer;font-size:15px;padding:3px 5px;transition:color .13s;flex-shrink:0}
+.del-proj-btn:hover{color:var(--high)}
+.add-proj-form{display:flex;align-items:center;gap:9px;padding:12px 0 4px}
+.color-swatches{display:flex;gap:5px;flex-wrap:wrap}
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:var(--card);font-size:12.5px;padding:9px 16px;border-radius:var(--r);font-weight:500;z-index:999;transform:translateY(50px);opacity:0;transition:all .22s;pointer-events:none;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:700px){.sidebar{display:none}.page{padding:14px}.stats{grid-template-columns:repeat(2,1fr)}.ach-grid{grid-template-columns:repeat(2,1fr)}.gstats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">✦</div>
+    <div class="sb-title">Mis Proyectos</div>
+  </div>
+  <div class="sb-xp" id="sb-xp"></div>
+  <div class="sb-nav" id="sb-nav"></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div><div class="tb-h" id="tb-h">Esta semana</div><div class="tb-s" id="tb-s">—</div></div>
+    <div class="tb-btns">
+      <button class="btn" onclick="goPage('gamif')">★ Logros</button>
+      <button class="btn" onclick="goPage('manage')">⚙ Proyectos</button>
+      <button class="btn btn-fill" onclick="goPage('import')">＋ Añadir tareas</button>
+    </div>
+  </div>
+
+  <div class="page on" id="page-semana">
+    <div class="stats" id="stats"></div>
+    <div class="proj-list" id="proj-list"></div>
+  </div>
+
+  <div class="page" id="page-import">
+    <div class="import-panel">
+      <div class="import-h">Añadir tareas de la semana</div>
+      <div class="import-s">Pega el texto con guiones de tu chat de Claude. Elige el proyecto y la prioridad para toda esa semana.</div>
+      <div class="step-row">
+        <div class="step-n">1</div>
+        <div class="step-body">
+          <div class="step-lbl">Pega el texto de tu chat</div>
+          <textarea class="textarea" id="imp-text" placeholder="- Contactar proveedor en Corea&#10;- Revisar packaging nuevo&#10;- Preparar propuesta de precios&#10;- Llamar al diseñador"></textarea>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">2</div>
+        <div class="step-body">
+          <div class="step-lbl">Proyecto y prioridad de esta semana</div>
+          <div class="proj-row">
+            <select class="sel" id="imp-proj"></select>
+            <div class="prio-pick" id="prio-pick">
+              <button class="ppb" data-p="high" onclick="pickPrio('high')">🔴 Alta</button>
+              <button class="ppb sm" data-p="med" onclick="pickPrio('med')">🟡 Media</button>
+              <button class="ppb" data-p="low" onclick="pickPrio('low')">🔵 Baja</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-row" style="margin-bottom:0">
+        <div class="step-n">3</div>
+        <div class="step-body">
+          <div class="step-lbl">Detectar tareas</div>
+          <button class="btn btn-fill" onclick="detectTasks()">Detectar →</button>
+        </div>
+      </div>
+      <div id="imp-preview"></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-gamif">
+    <div class="xp-hero" id="xp-hero"></div>
+    <div class="gstats" id="gstats"></div>
+    <div class="ach-h">Logros</div>
+    <div class="ach-grid" id="ach-grid"></div>
+    <div class="act-h">Actividad — últimos 30 días</div>
+    <div class="act-grid" id="act-grid"></div>
+  </div>
+
+  <div class="page" id="page-manage">
+    <div class="manage-panel">
+      <div class="manage-h">Gestionar proyectos</div>
+      <div id="proj-edit-list"></div>
+      <div class="add-proj-form" id="add-proj-form">
+        <input class="edit-input" id="new-proj-name" placeholder="Nombre del proyecto" style="flex:2">
+        <input class="emoji-input" id="new-proj-emoji" placeholder="📁" maxlength="2">
+        <div class="color-swatches" id="new-color-swatches"></div>
+        <button class="btn btn-fill btn-sm" onclick="addProject()">＋ Añadir</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Paleta de colores disponibles ──
+const PALETTE = ['#b86e30','#3a7db8','#3a9060','#8848a8','#a07818','#2a9090','#c04848','#5878c8','#688830','#a04878','#707070','#b85880'];
+
+// ── Achievements ──
+const ACHIEVEMENTS = [
+  {id:'a1',ico:'🌱',name:'Primera tarea',    desc:'Completa 1 tarea',          req:(d)=>d>=1},
+  {id:'a2',ico:'⚡',name:'En marcha',        desc:'Completa 5 tareas',         req:(d)=>d>=5},
+  {id:'a3',ico:'🔥',name:'En llamas',        desc:'Completa 10 tareas',        req:(d)=>d>=10},
+  {id:'a4',ico:'💎',name:'Diamante',         desc:'Completa 25 tareas',        req:(d)=>d>=25},
+  {id:'a5',ico:'🚀',name:'Imparable',        desc:'Completa 50 tareas',        req:(d)=>d>=50},
+  {id:'a6',ico:'🌐',name:'Multitarea',       desc:'Tareas en 4+ proyectos',    req:(d,s)=>{const ids=new Set(s.tasks.filter(t=>t.done).map(t=>t.projectId));return ids.size>=4}},
+  {id:'a7',ico:'📅',name:'3 días seguidos',  desc:'Activo 3 días consecutivos',req:(d,s)=>(s.meta.streak||0)>=3},
+  {id:'a8',ico:'🏆',name:'Semana perfecta',  desc:'Activo 7 días seguidos',    req:(d,s)=>(s.meta.streak||0)>=7},
+  {id:'a9',ico:'🎯',name:'100%',             desc:'Semana al 100% en un proyecto',req:(d,s)=>checkPerfectWeek(s)},
+];
+
+const XP_LEVELS=[
+  {lvl:1,name:'Aprendiz',   min:0,   max:100},
+  {lvl:2,name:'Organizado', min:100, max:300},
+  {lvl:3,name:'Ejecutor',   min:300, max:600},
+  {lvl:4,name:'Estratega',  min:600, max:1100},
+  {lvl:5,name:'Maestro',    min:1100,max:1800},
+  {lvl:6,name:'Leyenda',    min:1800,max:99999},
+];
+
+function lvlOf(xp){return XP_LEVELS.find(l=>xp>=l.min&&xp<l.max)||XP_LEVELS[XP_LEVELS.length-1];}
+function checkPerfectWeek(s){
+  const wt=s.tasks.filter(isThisWeek);
+  const byProj={};
+  wt.forEach(t=>{byProj[t.projectId]=byProj[t.projectId]||{total:0,done:0};byProj[t.projectId].total++;if(t.done)byProj[t.projectId].done++;});
+  return Object.values(byProj).some(p=>p.total>=3&&p.done===p.total);
+}
+
+// ── State ──
+let S=(()=>{
+  try{const r=localStorage.getItem('proy_v5');if(r)return JSON.parse(r);}catch(e){}
+  return{
+    projects:[
+      {id:'p1',name:'Hampers de Lujo Bodas',    emoji:'💍',hex:'#b86e30'},
+      {id:'p2',name:'Importación K-Beauty',      emoji:'✨',hex:'#3a7db8'},
+      {id:'p3',name:'K-Ayur Bridge',            emoji:'🌿',hex:'#3a9060'},
+      {id:'p4',name:'Marca Capilar Ayurvédica', emoji:'🌸',hex:'#8848a8'},
+      {id:'p5',name:'Sabor Selecto',            emoji:'🍃',hex:'#a07818'},
+      {id:'p6',name:'Taping',                   emoji:'🎯',hex:'#2a9090'},
+    ],
+    tasks:[],nextId:1,
+    meta:{xp:0,streak:0,lastActive:null,activity:{},earned:[]}
+  };
+})();
+
+function save(){try{localStorage.setItem('proy_v5',JSON.stringify(S));}catch(e){}}
+function proj(id){return S.projects.find(p=>p.id===id)||{name:'?',hex:'#999',emoji:'',id:'?'};}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function dk(d){return d.toISOString().slice(0,10);}
+
+const PRIO_ORDER={high:0,med:1,low:2};
+const PRIO_LABEL={high:'🔴 Alta',med:'🟡 Media',low:'🔵 Baja'};
+let currentPage='semana';
+let currentProj='all';
+let selectedPrio='med';
+let newProjColor=PALETTE[0];
+
+// ── XP ──
+function addXP(pts,msg){
+  S.meta.xp=(S.meta.xp||0)+pts;
+  const today=dk(new Date());
+  S.meta.activity=S.meta.activity||{};
+  S.meta.activity[today]=(S.meta.activity[today]||0)+1;
+  const yest=new Date();yest.setDate(yest.getDate()-1);
+  if(S.meta.lastActive===dk(yest)){S.meta.streak=(S.meta.streak||0)+1;}
+  else if(S.meta.lastActive!==today){S.meta.streak=1;}
+  S.meta.lastActive=today;
+  save();toast('+'+pts+' XP — '+msg);
+  checkAch();
+}
+function checkAch(){
+  const d=S.tasks.filter(t=>t.done).length;
+  (S.meta.earned=S.meta.earned||[]);
+  ACHIEVEMENTS.forEach(a=>{
+    if(!S.meta.earned.includes(a.id)&&a.req(d,S)){
+      S.meta.earned.push(a.id);save();
+      setTimeout(()=>toast('🏅 Logro desbloqueado: '+a.name+'!'),700);
+    }
+  });
+}
+
+// ── Week ──
+function weekRange(){
+  const n=new Date(),dy=n.getDay(),m=new Date(n);
+  m.setDate(n.getDate()-(dy===0?6:dy-1));m.setHours(0,0,0,0);
+  const s=new Date(m);s.setDate(m.getDate()+6);s.setHours(23,59,59,999);
+  return{m,s};
+}
+function weekLabel(){
+  const{m,s}=weekRange(),o={day:'numeric',month:'short'};
+  return m.toLocaleDateString('es-ES',o)+' – '+s.toLocaleDateString('es-ES',o);
+}
+function isThisWeek(t){
+  const{m,s}=weekRange(),d=new Date(t.weekDate||t.created);return d>=m&&d<=s;
+}
+
+// ── Routing ──
+function goPage(p){
+  currentPage=p;
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  render();
+}
+function goProj(id){currentProj=id;goPage('semana');}
+
+// ── Master render ──
+function render(){
+  renderSidebar();renderTopbar();
+  if(currentPage==='semana')renderSemana();
+  if(currentPage==='import')renderImportPage();
+  if(currentPage==='gamif')renderGamif();
+  if(currentPage==='manage')renderManage();
+}
+
+function renderSidebar(){
+  const xp=S.meta.xp||0,lvl=lvlOf(xp);
+  const pct=Math.min(100,Math.round((xp-lvl.min)/(lvl.max-lvl.min)*100));
+  document.getElementById('sb-xp').innerHTML=`
+    <div class="sb-xp-top"><span class="sb-xp-lvl">Nv.${lvl.lvl} ${lvl.name}</span><span class="sb-xp-pts">${xp} XP</span></div>
+    <div class="sb-xp-track"><div class="sb-xp-fill" style="width:${pct}%"></div></div>
+    <div class="sb-xp-streak">🔥 ${S.meta.streak||0} día${(S.meta.streak||0)!==1?'s':''} seguido${(S.meta.streak||0)!==1?'s':''}</div>`;
+
+  const wt=S.tasks.filter(isThisWeek);
+  const allPend=wt.filter(t=>!t.done).length;
+  const onAll=currentPage==='semana'&&currentProj==='all';
+
+  let h=`<div class="snl">Semana</div>
+  <div class="sni ${onAll?'on':''}" onclick="currentProj='all';goPage('semana')">
+    <span style="font-size:11px;opacity:.6">◈</span> Esta semana
+    ${allPend>0?`<span class="sni-cnt">${allPend}</span>`:''}
+  </div>
+  <div class="snl">Proyectos</div>`;
+
+  S.projects.forEach(p=>{
+    const pend=wt.filter(t=>t.projectId===p.id&&!t.done).length;
+    const on=currentPage==='semana'&&currentProj===p.id;
+    h+=`<div class="sni ${on?'on':''}" onclick="goProj('${p.id}')">
+      <span class="sni-dot" style="background:${p.hex}"></span>${esc(p.name)}
+      ${pend>0?`<span class="sni-cnt">${pend}</span>`:''}
+    </div>`;
+  });
+
+  h+=`<div class="snl">Más</div>
+  <div class="sni ${currentPage==='gamif'?'on':''}" onclick="goPage('gamif')"><span style="font-size:11px;opacity:.6">★</span> Logros & progreso</div>
+  <div class="sni ${currentPage==='manage'?'on':''}" onclick="goPage('manage')"><span style="font-size:11px;opacity:.6">⚙</span> Gestionar proyectos</div>`;
+
+  document.getElementById('sb-nav').innerHTML=h;
+}
+
+function renderTopbar(){
+  let h='Esta semana',s='';
+  const wt=S.tasks.filter(isThisWeek);
+  if(currentPage==='import'){h='Añadir tareas';s='Pega texto de Claude y detecta tareas';}
+  else if(currentPage==='gamif'){h='Logros & Progreso';s=(S.meta.earned||[]).length+'/'+ACHIEVEMENTS.length+' logros desbloqueados';}
+  else if(currentPage==='manage'){h='Gestionar proyectos';s=S.projects.length+' proyectos activos';}
+  else if(currentProj==='all'){
+    const pend=wt.filter(t=>!t.done).length,done=wt.filter(t=>t.done).length;
+    s=pend+' pendiente'+(pend!==1?'s':'')+' · '+done+' completada'+(done!==1?'s':'');
+  }else{
+    const p=proj(currentProj),pt=wt.filter(t=>t.projectId===currentProj);
+    h=p.emoji+' '+p.name;s=pt.filter(t=>!t.done).length+' pendiente'+(pt.filter(t=>!t.done).length!==1?'s':'')+' esta semana';
+  }
+  document.getElementById('tb-h').textContent=h;
+  document.getElementById('tb-s').textContent=s||'—';
+}
+
+// ── Semana ──
+function renderSemana(){
+  const wt=S.tasks.filter(isThisWeek);
+  const total=wt.length,done=wt.filter(t=>t.done).length,pend=total-done;
+  const high=wt.filter(t=>!t.done&&t.priority==='high').length;
+  document.getElementById('stats').innerHTML=`
+    <div class="sc"><div class="sc-v">${total}</div><div class="sc-l">Tareas semana</div></div>
+    <div class="sc"><div class="sc-v">${pend}</div><div class="sc-l">Pendientes</div></div>
+    <div class="sc"><div class="sc-v">${done}</div><div class="sc-l">Completadas</div></div>
+    <div class="sc"><div class="sc-v">${total>0?Math.round(done/total*100):0}%</div><div class="sc-l">Progreso</div></div>`;
+
+  const projs=currentProj==='all'?S.projects:S.projects.filter(p=>p.id===currentProj);
+  let html='';
+
+  projs.forEach(p=>{
+    const pt=wt.filter(t=>t.projectId===p.id).sort((a,b)=>{
+      if(a.done!==b.done)return a.done?1:-1;
+      return(PRIO_ORDER[a.priority]||1)-(PRIO_ORDER[b.priority]||1);
+    });
+    const pdone=pt.filter(t=>t.done).length,ppend=pt.filter(t=>!t.done).length;
+    const pct2=pt.length?Math.round(pdone/pt.length*100):0;
+    const prioVotes={high:0,med:0,low:0};
+    pt.forEach(t=>{prioVotes[t.priority]=(prioVotes[t.priority]||0)+1;});
+    const topPrio=Object.entries(prioVotes).sort((a,b)=>b[1]-a[1])[0]?.[0]||'med';
+
+    let th='';
+    if(pt.length===0){
+      th=`<div class="pcard-empty">Sin tareas esta semana · <span style="cursor:pointer;color:var(--muted);text-decoration:underline" onclick="goPage('import')">añadir</span></div>`;
+    }else{
+      let lastDone=false;
+      pt.forEach((t,i)=>{
+        if(!lastDone&&t.done&&i>0)th+=`<div class="divider"></div>`;
+        lastDone=t.done;
+        th+=tiHtml(t);
+      });
+    }
+
+    html+=`<div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-color" style="background:${p.hex}"></div>
+        <div class="pcard-info">
+          <div class="pcard-name"><span>${p.emoji}</span><span style="color:${p.hex}">${esc(p.name)}</span></div>
+          <div class="pcard-meta">${ppend} pendiente${ppend!==1?'s':''} · ${pdone} hecha${pdone!==1?'s':''}</div>
+        </div>
+        <span class="prio-badge ${topPrio}">${PRIO_LABEL[topPrio]}</span>
+      </div>
+      <div class="pcard-bar"><div class="pcard-bar-fill" style="width:${pct2}%;background:${p.hex}"></div></div>
+      <div class="pcard-tasks">${th}</div>
+      <div style="padding:0 8px 2px">
+        <div class="add-row" id="addrow-${p.id}" style="display:none">
+          <input class="add-input" id="addinp-${p.id}" placeholder="Escribe una tarea y pulsa Enter..."
+            onkeydown="if(event.key==='Enter')addInline('${p.id}');if(event.key==='Escape')hideAdd('${p.id}')">
+          <button class="btn btn-sm" onclick="addInline('${p.id}')">Añadir</button>
+          <button class="btn btn-sm" onclick="hideAdd('${p.id}')">✕</button>
+        </div>
+        <button class="pcard-addbtn" id="addbtn-${p.id}" onclick="showAdd('${p.id}')">
+          <span style="font-size:14px;color:${p.hex}">+</span> Añadir tarea
+        </button>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('proj-list').innerHTML=html||`<div style="padding:40px;text-align:center;color:var(--faint);font-size:13px">
+    No hay tareas esta semana.<br><br>
+    <button class="btn btn-fill" onclick="goPage('import')">＋ Añadir tareas</button></div>`;
+}
+
+function tiHtml(t){
+  return`<div class="ti ${t.done?'is-done':''}" id="ti-${t.id}">
+    <div class="ti-cb ${t.done?'done':''}" onclick="toggleTask('${t.id}')"></div>
+    <div class="ti-txt ${t.done?'done':''}">${esc(t.text)}</div>
+    <button class="ti-del" onclick="delTask('${t.id}')">×</button>
+  </div>`;
+}
+
+function showAdd(pid){
+  document.getElementById('addrow-'+pid).style.display='flex';
+  document.getElementById('addbtn-'+pid).style.display='none';
+  setTimeout(()=>document.getElementById('addinp-'+pid).focus(),30);
+}
+function hideAdd(pid){
+  document.getElementById('addrow-'+pid).style.display='none';
+  document.getElementById('addbtn-'+pid).style.display='flex';
+  document.getElementById('addinp-'+pid).value='';
+}
+function addInline(pid){
+  const inp=document.getElementById('addinp-'+pid);
+  const text=inp.value.trim();if(!text)return;
+  const existing=S.tasks.filter(t=>t.projectId===pid&&isThisWeek(t));
+  const prio=existing.length>0?(existing[0].priority||'med'):'med';
+  pushTask(text,pid,prio);hideAdd(pid);render();
+}
+
+// ── Import ──
+function renderImportPage(){
+  const sel=document.getElementById('imp-proj');
+  sel.innerHTML='';
+  S.projects.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.emoji+' '+p.name;sel.appendChild(o);});
+  syncPrioPick();
+}
+
+function pickPrio(p){selectedPrio=p;syncPrioPick();}
+function syncPrioPick(){
+  document.querySelectorAll('.ppb').forEach(btn=>{
+    btn.className='ppb';
+    if(btn.dataset.p===selectedPrio)btn.classList.add({high:'sh',med:'sm',low:'sl'}[selectedPrio]);
+  });
+}
+
+window._extracted=[];
+
+function detectTasks(){
+  const raw=document.getElementById('imp-text').value.trim();
+  if(!raw){toast('Pega texto primero');return;}
+  const pid=document.getElementById('imp-proj').value;
+  const lines=raw.split('\n'),found=[];
+  const pats=[
+    /^[-–—•*▸▶→»·✓✗]\s+(.+)/,
+    /^\d+[.)]\s+(.+)/,
+    /^[a-z][.)]\s+(.+)/i,
+    /^\[[ x]\]\s+(.+)/i,
+    /^(?:tarea|task|acción|todo)[:\s]+(.+)/i,
+  ];
+  const actionWords=/\b(revisar|contactar|crear|diseñar|preparar|enviar|llamar|investigar|buscar|actualizar|definir|analizar|confirmar|lanzar|publicar|configurar|hablar|escribir|subir|probar|validar|negociar|cerrar|solicitar|pedir|gestionar|organizar|planificar|hacer|completar|terminar|finalizar|empezar|desarrollar|implementar|mejorar|arreglar|corregir|comprar|vender|presentar|coordinar)\b/i;
+  lines.forEach(line=>{
+    const l=line.trim();if(!l||l.length<4||l.length>400)return;
+    if(/^#{1,3}\s/.test(l))return;
+    for(const pat of pats){const m=l.match(pat);if(m){const tx=(m[1]||'').trim();if(tx.length>3){found.push({text:tx,projId:pid,prio:selectedPrio,include:true});return;}}}
+    if(actionWords.test(l)&&l.length>8&&l.length<200&&l.split(' ').length<=20)
+      found.push({text:l,projId:pid,prio:selectedPrio,include:true});
+  });
+
+  if(!found.length){
+    document.getElementById('imp-preview').innerHTML=`<div style="margin-top:12px;padding:13px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);font-size:12px;color:var(--muted)">No se detectaron tareas. Usa guiones (- tarea), números (1. tarea) o bullets.</div>`;
+    return;
+  }
+  window._extracted=found;
+  renderPreview();
+}
+
+function renderPreview(){
+  const found=window._extracted;
+  let h=`<div style="margin-top:14px">
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px">${found.length} tarea${found.length!==1?'s':''} detectada${found.length!==1?'s':''} — desmarca las que no quieras</div>`;
+  found.forEach((f,i)=>{
+    const pOpts=S.projects.map(p=>`<option value="${p.id}" ${p.id===f.projId?'selected':''}>${p.emoji} ${p.name}</option>`).join('');
+    h+=`<div class="ext-item">
+      <input type="checkbox" id="ec${i}" ${f.include?'checked':''} onchange="window._extracted[${i}].include=this.checked">
+      <label for="ec${i}" class="ext-item-t">${esc(f.text)}</label>
+      <select class="mini-sel" onchange="window._extracted[${i}].projId=this.value">${pOpts}</select>
+      <select class="mini-sel" onchange="window._extracted[${i}].prio=this.value">
+        <option value="high" ${f.prio==='high'?'selected':''}>🔴 Alta</option>
+        <option value="med"  ${f.prio==='med' ?'selected':''}>🟡 Media</option>
+        <option value="low"  ${f.prio==='low' ?'selected':''}>🔵 Baja</option>
+      </select>
+    </div>`;
+  });
+  h+=`</div><div class="import-actions">
+    <button class="btn" onclick="clearImport()">Limpiar</button>
+    <button class="btn btn-fill" onclick="doImport()">Importar seleccionadas →</button>
+  </div>`;
+  document.getElementById('imp-preview').innerHTML=h;
+}
+
+function doImport(){
+  const toAdd=(window._extracted||[]).filter(x=>x.include);
+  if(!toAdd.length){toast('Selecciona al menos una tarea');return;}
+  toAdd.forEach(f=>pushTask(f.text,f.projId,f.prio));
+  addXP(toAdd.length*5,'Tareas importadas');
+  toast('✓ '+toAdd.length+' tarea'+(toAdd.length!==1?'s':'')+' añadida'+(toAdd.length!==1?'s':''));
+  clearImport();goPage('semana');
+}
+
+function clearImport(){
+  document.getElementById('imp-text').value='';
+  document.getElementById('imp-preview').innerHTML='';
+  window._extracted=[];
+}
+
+// ── Gamif ──
+function renderGamif(){
+  const xp=S.meta.xp||0,lvl=lvlOf(xp);
+  const pct=Math.min(100,Math.round((xp-lvl.min)/(lvl.max-lvl.min)*100));
+  const next=XP_LEVELS.find(l=>l.lvl===lvl.lvl+1);
+  document.getElementById('xp-hero').innerHTML=`
+    <div class="xp-hero-top">
+      <div><div class="xp-lvl-big">Nv.${lvl.lvl}</div><div class="xp-lvl-name">${lvl.name}</div></div>
+      <div class="xp-pts-big"><div class="xp-pts-val">${xp}</div><div class="xp-pts-lbl">XP Total</div></div>
+    </div>
+    <div class="xp-bar-big"><div class="xp-bar-big-fill" style="width:${pct}%"></div></div>
+    <div class="xp-bar-meta">
+      <span>${lvl.min} XP</span>
+      <span>${next?pct+'% → Nv.'+(lvl.lvl+1)+' '+next.name:'NIVEL MÁXIMO'}</span>
+      <span>${next?next.max+' XP':''}</span>
+    </div>`;
+
+  const done=S.tasks.filter(t=>t.done).length;
+  const wt=S.tasks.filter(isThisWeek);
+  const wdone=wt.filter(t=>t.done).length;
+  document.getElementById('gstats').innerHTML=`
+    <div class="gsc"><div class="gsc-v">${done}</div><div class="gsc-l">Tareas completadas</div></div>
+    <div class="gsc"><div class="gsc-v">${S.meta.streak||0}</div><div class="gsc-l">Días seguidos</div></div>
+    <div class="gsc"><div class="gsc-v">${wdone}</div><div class="gsc-l">Hechas esta semana</div></div>`;
+
+  const earnedIds=S.meta.earned||[];
+  document.getElementById('ach-grid').innerHTML=ACHIEVEMENTS.map(a=>{
+    const e=earnedIds.includes(a.id);
+    return`<div class="ach ${e?'earned':'locked'}"><div class="ach-ico">${a.ico}</div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div>`;
+  }).join('');
+
+  const act=S.meta.activity||{};
+  let ah='';
+  for(let i=29;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);const k=dk(d),c=act[k]||0;
+    const op=c===0?.07:Math.min(1,.3+c*.2);
+    ah+=`<div title="${k}: ${c} tarea${c!==1?'s':''}" style="width:14px;height:14px;border-radius:3px;background:var(--xp);opacity:${op}"></div>`;
+  }
+  document.getElementById('act-grid').innerHTML=ah;
+}
+
+// ── Manage projects ──
+let editingColor={};
+
+function renderManage(){
+  let h='';
+  S.projects.forEach((p,i)=>{
+    const taskCount=S.tasks.filter(t=>t.projectId===p.id).length;
+    const swatches=PALETTE.map(c=>`<div class="color-dot ${(editingColor[p.id]||p.hex)===c?'sel-c':''}" style="background:${c}" onclick="setEditColor('${p.id}','${c}',this)"></div>`).join('');
+    h+=`<div class="proj-edit-row">
+      <input class="emoji-input" value="${esc(p.emoji)}" maxlength="2" onchange="updateProj('${p.id}','emoji',this.value)" style="width:40px;text-align:center">
+      <input class="edit-input" value="${esc(p.name)}" onchange="updateProj('${p.id}','name',this.value)" style="flex:2">
+      <div style="display:flex;gap:4px;flex-wrap:wrap;max-width:160px">${swatches}</div>
+      <span style="font-size:10px;color:var(--faint);white-space:nowrap">${taskCount} tarea${taskCount!==1?'s':''}</span>
+      <button class="del-proj-btn" onclick="delProject('${p.id}')" title="Eliminar proyecto">×</button>
+    </div>`;
+  });
+  document.getElementById('proj-edit-list').innerHTML=h;
+
+  // New project color swatches
+  const ns=PALETTE.map(c=>`<div class="color-dot ${newProjColor===c?'sel-c':''}" style="background:${c}" onclick="newProjColor='${c}';renderManage()"></div>`).join('');
+  document.getElementById('new-color-swatches').innerHTML=ns;
+}
+
+function setEditColor(id,color,el){
+  editingColor[id]=color;
+  updateProj(id,'hex',color);
+}
+
+function updateProj(id,field,val){
+  const p=S.projects.find(x=>x.id===id);
+  if(p){p[field]=val;save();renderManage();renderSidebar();}
+}
+
+function delProject(id){
+  const p=proj(id);
+  const taskCount=S.tasks.filter(t=>t.projectId===id).length;
+  const msg=taskCount>0
+    ?`¿Eliminar "${p.name}"? Tiene ${taskCount} tarea${taskCount!==1?'s':''} que también se eliminarán.`
+    :`¿Eliminar "${p.name}"?`;
+  if(!confirm(msg))return;
+  S.projects=S.projects.filter(x=>x.id!==id);
+  S.tasks=S.tasks.filter(t=>t.projectId!==id);
+  save();render();toast('Proyecto eliminado');
+}
+
+function addProject(){
+  const name=document.getElementById('new-proj-name').value.trim();
+  if(!name){toast('Escribe un nombre');return;}
+  const emoji=document.getElementById('new-proj-emoji').value.trim()||'📁';
+  const id='p'+Date.now();
+  S.projects.push({id,name,emoji,hex:newProjColor});
+  save();
+  document.getElementById('new-proj-name').value='';
+  document.getElementById('new-proj-emoji').value='';
+  render();
+  toast('✓ Proyecto "'+name+'" añadido');
+}
+
+// ── Task actions ──
+function pushTask(text,projId,prio){
+  S.tasks.push({id:'t'+(S.nextId++),text:text.trim(),projectId:projId,priority:prio||'med',done:false,created:Date.now(),weekDate:Date.now()});
+  save();
+}
+function toggleTask(id){
+  const t=S.tasks.find(x=>x.id===id);if(!t)return;
+  t.done=!t.done;save();
+  if(t.done)addXP(10,'Tarea completada ✓');
+  render();
+}
+function delTask(id){
+  S.tasks=S.tasks.filter(x=>x.id!==id);save();render();
+}
+
+// ── Toast ──
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2400);
+}
+
+// ── Keyboard ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&currentPage!=='semana')goPage('semana');
+});
+
+render();
+</script>
+</body>
+</html>
